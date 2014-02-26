@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="gb2312" standalone="yes" ?>
+<project name="RECOLAR_LIBS" default="deploy" basedir=".">
+	<property name="reclib" value="H:\J2EE\MyJar" />
+	<property name="syslib" value="J:\J2EE\JavaDemo_Important\S2SH_Demo\WebRoot\WEB-INF\lib" />
+	<property name="jarlib" value="../jar"></property>
+	<property name="tomcatlib" value="X:\MyJava\apache-tomcat-6.0.35\webapps\TMS\WEB-INF\lib" />	
+	<property name="bin" value="../bin" />
+	<property name="src" value="../src" />
+	<property name="jar" value="common-rec-2.0" />
+
+	<target name="deploy" depends="antBuild">		
+		<jar file="${jar}.jar" basedir="${bin}" />
+		<echo>编译完成。。。打包并派发各路径</echo>
+		<copy file="${jar}.jar" todir="${jarlib}"/>		
+		<delete file="${jar}.jar" />
+	</target>
+
+	<target name="undeploy" depends="antBuild">
+		<delete file="${tomcatlib}/${jar}.jar" />
+	</target>
+	
+	<target name="show">
+		<echo>学好一点Ant吧。。。</echo>			
+	</target>
+
+	<target name="antBuild">
+		<echo>正在编译....</echo>
+		<javac srcdir="${src}" destdir="${bin}" />
+	</target>
+</project>

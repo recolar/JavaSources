@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="gb2312" standalone="yes" ?>
+<project name="practice" default="dos" basedir=".">
+
+	<property name="dir.dest" value="C:/AA" />
+	<property name="dir.src" value="C:/BB" />
+
+	<target name="dos">
+		<delete dir="${dir.dest}" />
+		<mkdir dir="${dir.dest}" />
+		<copy todir="${dir.dest}">
+			<fileset dir="${dir.src}">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+	</target>
+</project>

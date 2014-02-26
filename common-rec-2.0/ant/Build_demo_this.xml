@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="gb2312" standalone="yes" ?>
+<!--下面的defalut="build" 表示默认执行的target,basedir="."表明默认的根目录为存放本文件所在的目录,这里表示../为上一级目录-->
+<project name="practice" default="build" basedir="../">
+	<!--声明变量-->
+	<!--定义路径时候，可以是相对路径，也可以是绝对路径如:"C:/aa/bb"-->
+	<property name="dir.src" value="src" />
+	<property name="dir.bin" value="bin" />
+	<property name="dir.jar" value="jar" />
+	<property name="dir.lib" value="lib" />
+	<property name="jar.name" value="antdemo.jar" />
+
+	<!--depends="rebuild" 表示先执行rebuild的target，再执行本target,depends可以声明多个,如:depends="rebuild,init"-->
+	<target name="build" depends="rebuild">
+		<!--将basedir目录下的所有class文件打包成jar，放在file所指明的目录下面-->
+		<jar file="${dir.jar}/${jar.name}" basedir="${dir.bin}" />
+		<!--将file指明的文件放在todir指明的目录中-->
+		<copy todir="C:/" file="${dir.jar}/${jar.name}" />
+	</target>
+
+	<target name="rebuild" description="To clear the resource prepared for the jar builded">
+		<!--输出语句-->
+		<echo>Build the dir</echo>
+		<!--删除某个目录-->
+		<delete dir="${dir.jar}" />
+		<!--新建某个目录-->
+		<mkdir dir="${dir.jar}" />
+	</target>
+
+	<target name="compile" description="To Complie the code">
+		<echo>Complie the code</echo>
+		<!--将srcdir目录下的所有java文件编译为class放到destdir目录下面-->
+		<javac srcdir="${dir.src}" destdir="${dir.bin}" debug="on" source="1.5" target="1.5" fork="yes">
+			<!--指明编译运行时依赖目录,classpath是<path>单元所指明的id，参见下面-->
+			<classpath refid="classpath" />
+		</javac>
+	</target>
+
+	<!--声明classpath-->
+	<path id="classpath" description="Define the classpath">
+		<!--指明classpath所引用的目录为dir所指明的目录,如果classpath有多个目录,则<fileset>定义多个即可-->
+		<fileset dir="${dir.lib}">
+			<!--指明classpath目录下面的所有jar包-->
+			<include name="/*.jar" />
+		</fileset>
+	</path>
+
+	<!--将aa目录下的所有文件拷贝到bb,然后删除bb中的*.md5文件-->
+	<target name="copy.delete" description="copy and delete some files">
+		<!--删除目录bb-->
+		<delete dir="bb" />
+		<!--新建目录bb-->
+		<mkdir dir="bb" />
+		<!--指明拷贝目标的目录,就是将fileset指明的东西拷贝到bb目录下面-->
+		<copy todir="bb">
+			<!--指明一个文件集合,可以是一个目录，也可以是目录下的符合条件的文件-->
+			<fileset dir="aa">
+				<!--指定aa目录中所有.md5和.pom文件-->
+				<include name="/*.md5" />
+				<include name="/*.pom" />
+			</fileset>
+		</copy>
+		<!--删除指令，所删除的东西见fileset定义-->
+		<delete>
+			<!--下面定义了bb目录下面的所有.md5文件都给予删除-->
+			<fileset dir="bb">
+				<include name="/*.md5" />
+			</fileset>
+		</delete>
+	</target>
+
+	<!--解压指令-->
+	<target name="unzip" description="unzip some files">
+		<!--删除某个目录-->
+		<delete dir="cc" />
+		<!--新建某个目录-->
+		<mkdir dir="cc" />
+		<!--dest表示解压文件所存放的指定目录-->
+		<unzip dest="cc">
+			<!--定义文件集，指定某个目录下面的某些文件被解压并存放在cc目录中去-->
+			<fileset dir="aa">
+				<include name="sth.zip" />
+				<include name="jaf-1_0_2-upd2.zip" />
+			</fileset>
+		</unzip>
+	</target>
+
+	<!--说明如何调用其他ant文件-->
+	<target name="invoke.ant" description="invoke some ant build">
+		<!--调用antfile指定的ant文件,此时将会执行默认的target-->
+		<ant antfile="ant/ant_demo.xml" />
+		<!--调用antfile指定的ant文件,执行target为"description"-->
+		<ant antfile="ant/ant_demo.xml" target="description" />
+	</target>
+
+	<!--target设置参数动态调用另一个target的案例-->
+	<target name="antcall_demo">
+		<!--拷贝某个文件到cc目录下，此文件提供一个变量参数，该参数由其他target中的antcall指令提供-->
+		<copy file="${filename}" todir="cc" />
+		<echo>OK  ${filename} is copyed!</echo>
+	</target>
+
+	<!--提供参数调用另外一个target的案例,参见antcall指令,antcall指令可以出现多次-->
+	<target name="antcall.invoke">
+		<delete dir="cc" />
+		<mkdir dir="cc" />
+		<!--下面的target属性指明需要调用的target的名称,这里是"antcall_demo"-->
+		<antcall target="antcall_demo">
+			<!--调用antcall_demo提供的参数值,filename是在antcall_demo中声明好了的变量,value指明其值-->
+			<param name="filename" value="aa/ant-apache-bsf-1.7.0.pom" />
+		</antcall>
+		<antcall target="antcall_demo">
+			<!--调用antcall_demo提供的参数值,filename是在antcall_demo中声明好了的变量,value指明其值-->
+			<param name="filename" value="aa/ant-antlr-1.7.0.pom" />
+		</antcall>
+	</target>
+
+	<!--调用classpath下面的native2ascii.exe程序将某个properties文件中的中文转换成ascii字码 -->
+	<target name="native2ascii" description="to change the java unitcode to ascii">
+		<native2ascii dest="${dir.bin}" src="${dir.src}" encoding="GBK" includes="/*.properties" />
+	</target>
+</project>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="gb2312" standalone="yes" ?>
+<project name="common-rec-1.2.1" default="deploy" basedir=".">
+
+	<property name="jarPath" value="../jar" />
+	<property name="src" value="../src" />
+	<property name="bin" value="../bin" />
+	<property name="jar" value="common-rec-1.2.1" />
+	<property name="lib" value="../libs" />
+	<property name="doc.dir" value="../doc" />
+
+
+
+	<target name="deploy" depends="undeploy">
+		<jar file="${jar}.jar" basedir="${bin}" />
+		<copy file="${jar}.jar" todir="${jarPath}" />
+		<delete file="${jar}.jar" />
+	</target>
+
+	<target name="undeploy">
+		<echo>To delete the jar...</echo>
+		<delete file="${jarPath}/${jar}.jar" />
+	</target>
+
+	<!--编译-->
+	<target name="compile">
+		<echo>Compile the code....</echo>
+		<javac srcdir="${src}" destdir="${bin}">
+			<!--将需要编译的class文件引用classpath,否则编译报错-->
+			<classpath refid="compile.classpath" />
+		</javac>
+	</target>
+
+
+	<!--设置classpath,直接指向路径libs下的所有*.jar文件-->
+	<path id="compile.classpath">
+		<!--需要引用classpath的路径,这里指的是存放class文件的bin目录-->
+		<pathelement location="${bin}" />
+		<!--如果第三方jar包存放于多个目录下,可配置下面多行-->
+		<fileset dir="${lib}">
+			<include name="/*.jar" />
+		</fileset>
+		
+	</path>
+
+	
+	<target name="buildJavaDoc" description="TO Build JavaDoc API Document">
+		<delete dir="${doc.dir}" description="To Delete doc" />
+		<mkdir dir="${doc.dir}" description="To Make doc" />
+		<javadoc sourcepath="${src}" destdir="${doc.dir}">
+			<classpath refid="compile.classpath" />
+		</javadoc>
+	</target>
+</project>

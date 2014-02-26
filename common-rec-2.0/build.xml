@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="common-rec-2.0">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="C:/Users/Administrator/AppData/Local/MyEclipse Professional"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+	<property name="jarlib" value="jar"></property>
+	<property name="tomcatlib" value="X:\MyJava\apache-tomcat-6.0.35\webapps\TMS\WEB-INF\lib" />	
+	<property name="bin" value="bin" />
+	<property name="src" value="src" />
+	<property name="jar" value="common-rec-2.0" />
+	
+    <path id="common-rec-2.0.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/ant.jar"/>
+        <pathelement location="lib/commons-logging.jar"/>
+        <pathelement location="lib/dom4j-1.6.1.jar"/>
+        <pathelement location="lib/jaxen-1.1-beta-6.jar"/>
+        <pathelement location="lib/jtds-1.2.5.jar"/>
+        <pathelement location="lib/junit-3.8.1.jar"/>
+        <pathelement location="lib/log4j.jar"/>
+        <pathelement location="lib/mm.mysql-2.0.4-bin.jar"/>
+        <pathelement location="lib/msbase.jar"/>
+        <pathelement location="lib/mssqlserver.jar"/>
+        <pathelement location="lib/msutil.jar"/>
+        <pathelement location="lib/mysql-connector-java-3.1.4-beta-bin.jar"/>
+        <pathelement location="lib/ora9.2.0.3-jdk1.4.jar"/>
+        <pathelement location="lib/strutstest-2.1.0.jar"/>
+        <pathelement location="lib/spring-core-4.0.0.M1.jar"/>
+        <pathelement location="lib/spring-jdbc-4.0.0.M1.jar"/>
+        <pathelement location="lib/spring-orm-4.0.0.M1.jar"/>
+        <pathelement location="lib/hibernate-core-4.2.2.Final.jar"/>
+        <pathelement location="lib/struts2-core-2.3.15.1.jar"/>
+        <pathelement location="lib/servlet-api.jar"/>
+        <pathelement location="lib/xwork-core-2.3.15.1.jar"/>
+        <pathelement location="lib/spring-tx-4.0.0.M1.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build">
+    	<jar file="${jar}.jar" basedir="${bin}" />
+		<echo>编译完成。。。打包并派发各路径</echo>
+		<copy file="${jar}.jar" todir="${jarlib}"/>		
+		<delete file="${jar}.jar" />
+    </target>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="common-rec-2.0.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+</project>

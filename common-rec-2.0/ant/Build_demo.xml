@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="gb2312" standalone="yes" ?>
+<project name="practice" default="build" basedir=".">
+
+	<property name="dir.bak" value="../bak">
+	</property>
+	<property name="dir.jar" value="../jar">
+	</property>
+
+	<!--创建一个文件bak,然后将jar文件夹下面所有.bak文件拷贝到bak文件夹下-->
+
+	<target name="build" depends="makeBakDir" description="To Make Bak Dir">
+		<echo>Step2-->拷贝jar文件夹下面所有*.bak文件到bak文件夹中</echo>
+		<copy todir="${dir.bak}">
+			<fileset dir="${dir.jar}">
+				<include name="/*.bak" />
+			</fileset>
+		</copy>
+		<echo>Step3-->在jar文件夹下面删除*.bak</echo>
+		<delete>
+			<fileset dir="${dir.jar}">
+				<include name="/*.bak" />
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="makeBakDir">
+		<echo>Step1-->创建文件夹bak</echo>
+		<mkdir dir="${dir.bak}" />
+	</target>
+
+	<target name="toDeleteBak">
+		<!--删除某个文件夹下面的符合要求的文件-->
+		<delete>
+			<fileset dir="${dir.bak}">
+				<include name="/*.bak" />
+			</fileset>
+		</delete>
+		<!--删除某个文件夹-->
+		<delete dir="${dir.bak}" />
+		<!--删除某个文件-->
+		<delete file="../jar/aa.txt" />
+	</target>
+	
+</project>
